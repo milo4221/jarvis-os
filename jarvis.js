@@ -805,11 +805,10 @@
       recognition.interimResults = false;
       recognition.lang = 'en-US';
 
-      let isSpeaking = false;
       let micActive = false;
 
       function startListening() {
-        if (isSpeaking || micActive) return;
+        if (window._jarvisIsSpeaking || micActive) return;
         try {
           recognition.start();
           micActive = true;
@@ -851,26 +850,16 @@
         orb.classList.remove('listening');
         // Auto-restart after it ends (browser stops it after silence)
         // But not if JARVIS is currently speaking
-        if (!isSpeaking) {
+        if (!window._jarvisIsSpeaking) {
           setTimeout(startListening, 300);
         }
       };
 
       // Pause mic while JARVIS speaks, resume after
-      const origSpeak = window.speechSynthesis.speak.bind(window.speechSynthesis);
-      window.speechSynthesis.speak = function(utt) {
-        isSpeaking = true;
-        stopListening();
-        utt.addEventListener('end', () => {
-          isSpeaking = false;
-          setTimeout(startListening, 500);
-        });
-        utt.addEventListener('error', () => {
-          isSpeaking = false;
-          setTimeout(startListening, 500);
-        });
-        origSpeak(utt);
-      };
+      // This is the ONLY speechSynthesis.speak hook — orb.js defers to us
+      window._jarvisIsSpeaking = false;
+      window._jarvisStartListening = startListening;
+      window._jarvisStopListening = stopListening;
 
       // Click orb to manually toggle
       orb.addEventListener('click', () => {
@@ -902,12 +891,39 @@
 
   function speak(text) {
     if (!synthesis) return;
+
+    // Stop mic while speaking
+    window._jarvisIsSpeaking = true;
+    if (typeof window._jarvisStopListening === 'function') window._jarvisStopListening();
+
+    // Set orb to speaking state
+    if (typeof window.setOrbState === 'function') window.setOrbState('speaking');
+
     synthesis.cancel();
+
     const utt = new SpeechSynthesisUtterance(text);
-    utt.rate = CONFIG.speechRate * 0.92;  // Slightly slower for JARVIS gravitas
-    utt.pitch = 0.85;                      // Lower pitch = deeper, more authoritative
+    utt.rate = CONFIG.speechRate * 0.92;
+    utt.pitch = 0.85;
     utt.volume = 1.0;
     if (voices.length > CONFIG.voiceIndex) utt.voice = voices[CONFIG.voiceIndex];
+
+    utt.addEventListener('end', () => {
+      window._jarvisIsSpeaking = false;
+      if (typeof window.setOrbState === 'function') window.setOrbState('idle');
+      // Resume mic after a short delay
+      setTimeout(() => {
+        if (typeof window._jarvisStartListening === 'function') window._jarvisStartListening();
+      }, 600);
+    });
+
+    utt.addEventListener('error', () => {
+      window._jarvisIsSpeaking = false;
+      if (typeof window.setOrbState === 'function') window.setOrbState('idle');
+      setTimeout(() => {
+        if (typeof window._jarvisStartListening === 'function') window._jarvisStartListening();
+      }, 600);
+    });
+
     synthesis.speak(utt);
   }
 

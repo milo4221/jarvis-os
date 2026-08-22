@@ -314,13 +314,8 @@
     }
 
     if (window.speechSynthesis) {
-      var origSpeak = window.speechSynthesis.speak.bind(window.speechSynthesis);
-      window.speechSynthesis.speak = function(utt) {
-        setOrbState('speaking');
-        utt.addEventListener('end', function() { setOrbState('idle'); });
-        utt.addEventListener('error', function() { setOrbState('idle'); });
-        origSpeak(utt);
-      };
+      // Don't hook here — jarvis.js initVoice handles speak override
+      // Just expose setOrbState for jarvis.js to call
     }
   }
 
