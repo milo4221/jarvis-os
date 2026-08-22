@@ -1,0 +1,214 @@
+/* =============================================
+   J.A.R.V.I.S. OS — ORB CENTER PANEL
+   3D particle sphere + starry space background
+   ============================================= */
+
+/* ===== Starry Space Background ===== */
+#app {
+  background: #020408 !important;
+  position: relative;
+}
+
+/* Dense star field layer 1 */
+#app::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    radial-gradient(1px 1px at 2% 8%, #fff, transparent),
+    radial-gradient(1px 1px at 5% 22%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 8% 45%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 11% 67%, rgba(180,210,255,0.8), transparent),
+    radial-gradient(1px 1px at 14% 85%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 18% 12%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 22% 38%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 25% 55%, rgba(200,230,255,0.7), transparent),
+    radial-gradient(1px 1px at 28% 78%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 32% 5%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 35% 30%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 38% 50%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1.5px 1.5px at 42% 72%, rgba(160,200,255,0.7), transparent),
+    radial-gradient(1px 1px at 45% 92%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 48% 15%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 52% 35%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 55% 58%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1.5px 1.5px at 58% 80%, rgba(190,220,255,0.6), transparent),
+    radial-gradient(1px 1px at 62% 3%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 65% 25%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 68% 48%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 72% 65%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 75% 88%, rgba(170,210,255,0.7), transparent),
+    radial-gradient(1px 1px at 78% 10%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 82% 32%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 88% 75%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 92% 18%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 95% 42%, rgba(200,220,255,0.7), transparent),
+    radial-gradient(1px 1px at 98% 90%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 7% 33%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 17% 57%, rgba(255,255,255,0.35), transparent),
+    radial-gradient(1px 1px at 27% 93%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 37% 17%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 47% 43%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 57% 7%, rgba(255,255,255,0.35), transparent),
+    radial-gradient(1px 1px at 67% 83%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 77% 53%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 87% 27%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 97% 63%, rgba(255,255,255,0.35), transparent),
+    radial-gradient(2px 2px at 20% 70%, rgba(100,160,255,0.6), transparent),
+    radial-gradient(2px 2px at 60% 20%, rgba(120,180,255,0.5), transparent),
+    radial-gradient(2px 2px at 80% 60%, rgba(140,190,255,0.5), transparent);
+  pointer-events: none;
+}
+
+/* Twinkling layer */
+#app::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 20%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 50% 10%, rgba(150,200,255,0.7), transparent),
+    radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 90% 70%, rgba(180,220,255,0.7), transparent),
+    radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 40% 30%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 65% 90%, rgba(140,200,255,0.6), transparent),
+    radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 55% 50%, rgba(255,255,255,0.4), transparent);
+  animation: twinkle 4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.9; }
+}
+
+/* ===== Center Panel — Orb Layout ===== */
+.center-panel {
+  overflow: hidden !important;
+}
+.center-panel .orb-container {
+  display: flex; flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 3D Canvas Wrapper */
+#orb-canvas-wrap {
+  flex: 1;
+  position: relative;
+  min-height: 200px;
+  overflow: hidden;
+}
+#orb-canvas-wrap canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Orb Label */
+.orb-label {
+  position: absolute;
+  bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+.orb-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--accent);
+  letter-spacing: 8px;
+  text-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+}
+.orb-state-label {
+  font-family: var(--font-display);
+  font-size: 0.5rem;
+  letter-spacing: 4px;
+  margin-top: 6px;
+  display: block;
+  transition: color 0.3s ease;
+}
+.orb-state-label.idle { color: var(--text-dim); }
+.orb-state-label.listening { color: var(--success); animation: state-pulse 1s ease-in-out infinite; }
+.orb-state-label.speaking { color: var(--accent); animation: state-pulse 0.6s ease-in-out infinite; }
+
+@keyframes state-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Orb signal bars */
+.orb-signal {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+.orb-signal-bar {
+  width: 3px;
+  background: var(--accent);
+  border-radius: 1px;
+  opacity: 0.6;
+}
+.orb-signal-bar:nth-child(1) { height: 4px; }
+.orb-signal-bar:nth-child(2) { height: 7px; }
+.orb-signal-bar:nth-child(3) { height: 10px; }
+.orb-signal-bar:nth-child(4) { height: 13px; opacity: 0.8; }
+
+/* ===== Chat Transcript Overlay ===== */
+.orb-transcript {
+  position: absolute;
+  bottom: 70px; left: 50%;
+  transform: translateX(-50%);
+  max-width: 500px; width: 90%;
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  z-index: 10;
+  pointer-events: none;
+  mask-image: linear-gradient(transparent 0%, black 30%);
+  -webkit-mask-image: linear-gradient(transparent 0%, black 30%);
+}
+.orb-transcript .message {
+  pointer-events: auto;
+  max-width: 100%;
+  animation: msg-fade-in 0.5s ease;
+}
+.orb-transcript .msg-text {
+  background: rgba(0, 212, 255, 0.06) !important;
+  border: 1px solid rgba(0, 212, 255, 0.12) !important;
+  backdrop-filter: blur(10px);
+  font-size: 0.82rem;
+}
+.orb-transcript .user-msg .msg-text {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+@keyframes msg-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Orb Input Bar ===== */
+.orb-input-area {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(180deg, transparent, rgba(2, 4, 8, 0.6));
+  position: relative;
+  z-index: 10;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 768px) {
+  .orb-label { bottom: 60px; }
+  .orb-name { font-size: 0.9rem; letter-spacing: 5px; }
+}

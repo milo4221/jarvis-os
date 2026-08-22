@@ -1,0 +1,225 @@
+/* =============================================
+   J.A.R.V.I.S. OS — TECH HUD OVERLAY
+   Scanlines, hex streams, circuit decorations
+   ============================================= */
+
+/* ===== Scanline Overlay ===== */
+.scanline-overlay {
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 212, 255, 0.008) 3px,
+    rgba(0, 212, 255, 0.008) 4px
+  );
+  animation: scanline-drift 10s linear infinite;
+}
+@keyframes scanline-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 400px; }
+}
+
+/* ===== Grid Background ===== */
+.hud-grid-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, transparent 20%, black 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, transparent 20%, black 80%);
+  opacity: 0.6;
+}
+
+/* ===== Upgraded HUD Corners ===== */
+.hud-corner {
+  position: absolute; width: 100px; height: 100px;
+  border-color: var(--accent); opacity: 0.15;
+  z-index: 3;
+}
+.hud-corner .hud-label {
+  font-family: var(--font-display);
+  font-size: 0.45rem; letter-spacing: 2px;
+  color: var(--accent); opacity: 0.6;
+  position: absolute;
+}
+.hud-corner.top-left .hud-label { top: 4px; left: 14px; }
+.hud-corner.top-right .hud-label { top: 4px; right: 14px; }
+.hud-corner.bottom-left .hud-label { bottom: 4px; left: 14px; }
+.hud-corner.bottom-right .hud-label { bottom: 4px; right: 14px; }
+
+/* Corner brackets with animated dots */
+.hud-corner::before {
+  content: '';
+  position: absolute; width: 5px; height: 5px;
+  background: var(--accent); border-radius: 50%;
+  opacity: 0.5; animation: corner-pulse 3s ease-in-out infinite;
+}
+.hud-corner::after {
+  content: '';
+  position: absolute; width: 20px; height: 20px;
+  border-color: inherit; opacity: 0.5;
+}
+.hud-corner.top-left { top: 8px; left: 8px; border-top: 1px solid; border-left: 1px solid; }
+.hud-corner.top-left::before { top: -3px; left: -3px; }
+.hud-corner.top-left::after { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+.hud-corner.top-right { top: 8px; right: 8px; border-top: 1px solid; border-right: 1px solid; }
+.hud-corner.top-right::before { top: -3px; right: -3px; }
+.hud-corner.top-right::after { bottom: 0; left: 0; border-bottom: 1px solid; border-left: 1px solid; }
+.hud-corner.bottom-left { bottom: 8px; left: 8px; border-bottom: 1px solid; border-left: 1px solid; }
+.hud-corner.bottom-left::before { bottom: -3px; left: -3px; }
+.hud-corner.bottom-left::after { top: 0; right: 0; border-top: 1px solid; border-right: 1px solid; }
+.hud-corner.bottom-right { bottom: 8px; right: 8px; border-bottom: 1px solid; border-right: 1px solid; }
+.hud-corner.bottom-right::before { bottom: -3px; right: -3px; }
+.hud-corner.bottom-right::after { top: 0; left: 0; border-top: 1px solid; border-left: 1px solid; }
+
+@keyframes corner-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.4); }
+}
+
+/* ===== Hex Data Streams ===== */
+.hex-stream {
+  position: fixed; z-index: 2; pointer-events: none;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.4rem; letter-spacing: 2px;
+  color: rgba(0, 212, 255, 0.07);
+  writing-mode: vertical-lr;
+  white-space: pre; line-height: 1.8;
+  overflow: hidden;
+}
+.hex-stream-l { top: 60px; left: 6px; bottom: 40px; width: 12px; }
+.hex-stream-r { top: 60px; right: 6px; bottom: 40px; width: 12px; }
+
+/* ===== App Scanline ===== */
+.app-scanline {
+  position: fixed; left: 0; right: 0;
+  height: 1px; z-index: 3; pointer-events: none;
+  background: linear-gradient(90deg, transparent 10%, rgba(0, 212, 255, 0.15) 30%, rgba(0, 212, 255, 0.3) 50%, rgba(0, 212, 255, 0.15) 70%, transparent 90%);
+  animation: scanline-move 8s linear infinite;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.1);
+}
+@keyframes scanline-move {
+  0% { top: 52px; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: calc(100vh - 34px); opacity: 0; }
+}
+
+/* ===== Logo Mini Reactor ===== */
+.logo-reactor {
+  width: 20px; height: 20px; position: relative; flex-shrink: 0;
+}
+.logo-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1.5px solid var(--accent); opacity: 0.4;
+  animation: reactor-spin 4s linear infinite;
+}
+.logo-core {
+  position: absolute; inset: 5px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+  animation: core-pulse 2s ease-in-out infinite;
+}
+
+/* ===== Widget Header Accent Bar ===== */
+.wh-accent {
+  position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+  background: linear-gradient(180deg, var(--accent), transparent);
+  border-radius: 0 2px 2px 0;
+  opacity: 0.6;
+}
+.widget-header { position: relative; }
+
+/* ===== Chat Header Reactor ===== */
+.chat-header-reactor {
+  width: 18px; height: 18px; position: relative; flex-shrink: 0;
+}
+.chr-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1px dashed var(--accent); opacity: 0.3;
+  animation: reactor-spin 6s linear infinite;
+}
+.chr-core {
+  position: absolute; inset: 4px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  animation: core-pulse 2s ease-in-out infinite;
+}
+.chat-header-tag {
+  font-family: var(--font-display);
+  font-size: 0.45rem; letter-spacing: 1.5px;
+  color: var(--accent); opacity: 0.4;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  margin-left: 8px;
+}
+
+/* ===== Avatar Ring ===== */
+.msg-avatar {
+  position: relative;
+}
+.avatar-ring {
+  position: absolute; inset: -3px;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+  opacity: 0.2;
+  animation: avatar-glow 3s ease-in-out infinite;
+}
+@keyframes avatar-glow {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.35; }
+}
+
+/* ===== Input Prefix ===== */
+.input-prefix {
+  font-family: var(--font-display);
+  font-size: 1.1rem; color: var(--accent);
+  padding-left: 14px; opacity: 0.5;
+  animation: prefix-blink 1.5s step-end infinite;
+}
+@keyframes prefix-blink {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.15; }
+}
+
+/* ===== Double Orb Ring ===== */
+.orb-ring-2 {
+  position: absolute; inset: -4px; border-radius: 50%;
+  border: 1px solid var(--accent); opacity: 0.1;
+  animation: reactor-spin 8s linear infinite reverse;
+}
+
+/* ===== Connection Dots ===== */
+.conn-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--text-dim); flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: all var(--transition);
+}
+.conn-dot.connected {
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(0, 230, 118, 0.5);
+  animation: core-pulse 2s ease-in-out infinite;
+}
+
+/* ===== Bottom Bar Divider ===== */
+.sys-divider {
+  color: var(--accent); opacity: 0.2;
+  margin: 0 8px;
+}
+
+/* ===== Command Buttons Upgraded ===== */
+.cmd-btn {
+  display: flex; align-items: center; gap: 6px;
+  justify-content: center;
+}
+.cmd-icon { font-size: 0.85rem; }
+
+/* ===== Mobile ===== */
+@media (max-width: 768px) {
+  .scanline-overlay, .hud-grid-bg, .app-scanline,
+  .hex-stream, .hud-lines { display: none; }
+}

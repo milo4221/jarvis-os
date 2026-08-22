@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head>
+<body>
+<canvas id="c" width="512" height="512"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+const cx = 256, cy = 256;
+
+// Background
+ctx.fillStyle = '#0a0e17';
+ctx.fillRect(0, 0, 512, 512);
+
+// Outer glow
+const g1 = ctx.createRadialGradient(cx, cy, 100, cx, cy, 256);
+g1.addColorStop(0, 'rgba(0, 212, 255, 0.15)');
+g1.addColorStop(1, 'transparent');
+ctx.fillStyle = g1;
+ctx.fillRect(0, 0, 512, 512);
+
+// Rings
+ctx.strokeStyle = '#00d4ff';
+ctx.lineWidth = 3;
+ctx.globalAlpha = 0.4;
+ctx.beginPath(); ctx.arc(cx, cy, 180, 0, Math.PI * 2); ctx.stroke();
+ctx.lineWidth = 2;
+ctx.globalAlpha = 0.3;
+ctx.beginPath(); ctx.arc(cx, cy, 140, 0, Math.PI * 2); ctx.stroke();
+ctx.lineWidth = 1;
+ctx.globalAlpha = 0.2;
+ctx.beginPath(); ctx.arc(cx, cy, 100, 0, Math.PI * 2); ctx.stroke();
+
+// Core
+ctx.globalAlpha = 1;
+const g2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
+g2.addColorStop(0, '#ffffff');
+g2.addColorStop(0.3, '#00d4ff');
+g2.addColorStop(1, 'rgba(0, 212, 255, 0)');
+ctx.fillStyle = g2;
+ctx.beginPath(); ctx.arc(cx, cy, 60, 0, Math.PI * 2); ctx.fill();
+
+// J text
+ctx.font = 'bold 80px Helvetica, Arial, sans-serif';
+ctx.fillStyle = '#0a0e17';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.fillText('J', cx, cy + 4);
+
+// Export
+const link192 = document.createElement('a');
+// Create 192px version
+const c2 = document.createElement('canvas');
+c2.width = 192; c2.height = 192;
+c2.getContext('2d').drawImage(c, 0, 0, 192, 192);
+
+document.title = 'Icon generated';
+</script>
+</body></html>
