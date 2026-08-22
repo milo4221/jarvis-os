@@ -5,6 +5,31 @@
 (function() {
   'use strict';
 
+  // ===== Audio Init =====
+  // Try to start audio context immediately; will also start on first click
+  if (typeof window.initBootAudio === 'function') {
+    window.initBootAudio().then(() => {
+      window.playBootSound('boot-hum');
+    });
+  }
+
+  // Click-to-start overlay for AudioContext policy
+  const bootScreen = document.getElementById('boot-screen');
+  let audioStarted = false;
+
+  function tryStartAudio() {
+    if (audioStarted) return;
+    audioStarted = true;
+    if (typeof window.initBootAudio === 'function') {
+      window.initBootAudio().then(() => {
+        window.playBootSound('boot-hum');
+      });
+    }
+  }
+
+  bootScreen.addEventListener('click', tryStartAudio, { once: true });
+  bootScreen.addEventListener('touchstart', tryStartAudio, { once: true });
+
   // ===== Boot Particles =====
   const canvas = document.getElementById('boot-particles');
   const ctx = canvas.getContext('2d');
@@ -127,6 +152,11 @@
     barEl.style.width = progress + '%';
     glowEl.style.width = progress + '%';
     pctEl.textContent = Math.round(progress) + '%';
+
+    // Sound: rising tone tracks progress
+    if (typeof window.playBootSound === 'function') {
+      window.playBootSound('progress', progress);
+    }
   }, 200);
 
   // Execute boot steps
@@ -147,7 +177,13 @@
           charIdx++;
         } else {
           clearInterval(typeInterval);
-          if (step.done) diagLine.classList.add('done');
+          if (step.done) {
+            diagLine.classList.add('done');
+            // Sound: diagnostic beep when line completes
+            if (typeof window.playBootSound === 'function') {
+              window.playBootSound('diag-beep');
+            }
+          }
         }
       }, 8);
 
@@ -161,6 +197,10 @@
           box.classList.add('online');
           state.className = 'sb-state online';
           state.textContent = 'ONLINE';
+          // Sound: ping when box goes ONLINE
+          if (typeof window.playBootSound === 'function') {
+            window.playBootSound('online-ping');
+          }
         }, 600);
       }
     }, step.delay);
@@ -175,8 +215,18 @@
     glowEl.style.width = '100%';
     pctEl.textContent = '100%';
 
+    // Sound: boot complete power-up chime
+    if (typeof window.playBootSound === 'function') {
+      window.playBootSound('boot-complete');
+    }
+
     // Flash and transition to OPENING SEQUENCE
     setTimeout(() => {
+      // Sound: transition woosh
+      if (typeof window.playBootSound === 'function') {
+        window.playBootSound('transition');
+      }
+
       animating = false;
       const bootScreen = document.getElementById('boot-screen');
       bootScreen.classList.add('fade-out');
