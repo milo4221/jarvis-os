@@ -797,81 +797,42 @@
     synthesis.onvoiceschanged = loadVoices;
     loadVoices();
 
-    // Speech Recognition — ALWAYS ON
+    // Speech Recognition — click to talk
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       recognition = new SpeechRecognition();
-      recognition.continuous = true;
+      recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = 'en-US';
 
-      let micActive = false;
-
-      function startListening() {
-        if (window._jarvisIsSpeaking || micActive) return;
-        try {
-          recognition.start();
-          micActive = true;
-          orb.classList.add('listening');
-          voiceStatus.classList.add('active');
-        } catch (e) {
-          // Already started — ignore
-        }
-      }
-
-      function stopListening() {
-        micActive = false;
-        try { recognition.stop(); } catch(e) {}
-        orb.classList.remove('listening');
-        voiceStatus.classList.remove('active');
-      }
-
       recognition.onresult = (e) => {
-        // Get the latest result
-        const last = e.results[e.results.length - 1];
-        if (!last.isFinal) return;
-        const text = last[0].transcript.trim();
+        const text = e.results[0][0].transcript.trim();
         if (!text) return;
-
         addMessage(text, 'user');
         processMessage(text);
+        orb.classList.remove('listening');
+        voiceStatus.classList.remove('active');
       };
 
-      recognition.onerror = (e) => {
-        micActive = false;
-        // Auto-restart unless it's a "not-allowed" error
-        if (e.error !== 'not-allowed' && e.error !== 'service-not-allowed') {
-          setTimeout(startListening, 500);
-        }
+      recognition.onerror = () => {
+        orb.classList.remove('listening');
+        voiceStatus.classList.remove('active');
       };
 
       recognition.onend = () => {
-        micActive = false;
         orb.classList.remove('listening');
-        // Auto-restart after it ends (browser stops it after silence)
-        // But not if JARVIS is currently speaking
-        if (!window._jarvisIsSpeaking) {
-          setTimeout(startListening, 300);
-        }
+        voiceStatus.classList.remove('active');
       };
 
-      // Pause mic while JARVIS speaks, resume after
-      // This is the ONLY speechSynthesis.speak hook — orb.js defers to us
-      window._jarvisIsSpeaking = false;
-      window._jarvisStartListening = startListening;
-      window._jarvisStopListening = stopListening;
-
-      // Click orb to manually toggle
       orb.addEventListener('click', () => {
-        if (micActive) {
-          stopListening();
+        if (orb.classList.contains('listening')) {
+          recognition.stop();
         } else {
-          startListening();
+          recognition.start();
+          orb.classList.add('listening');
+          voiceStatus.classList.add('active');
         }
       });
-
-      // Auto-start mic on load
-      setTimeout(startListening, 1000);
 
     } else {
       orb.title = 'Voice not supported in this browser';
