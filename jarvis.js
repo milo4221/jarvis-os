@@ -902,9 +902,9 @@
     synthesis.cancel();
 
     const utt = new SpeechSynthesisUtterance(text);
-    utt.rate = CONFIG.speechRate * 0.92;
-    utt.pitch = 0.85;
-    utt.volume = 1.0;
+    utt.rate = CONFIG.speechRate * 0.88;   // Slower, more natural pacing
+    utt.pitch = 0.92;                       // Closer to natural male pitch
+    utt.volume = 0.9;                       // Slightly softer, less robotic
     if (voices.length > CONFIG.voiceIndex) utt.voice = voices[CONFIG.voiceIndex];
 
     utt.addEventListener('end', () => {
