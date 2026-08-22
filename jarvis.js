@@ -22,23 +22,23 @@
 
   // ========== INIT APP ==========
   function initApp() {
-    applyTheme(CONFIG.theme);
-    initClock();
-    initParticles();
-    initChat();
-    initVoice();
-    initTasks();
-    initNotes();
-    initNotepad();
-    initSettings();
-    initMobileNav();
-    initSystemMonitor();
-    initWeather();
-    if (typeof window.initSpeedTest === 'function') window.initSpeedTest();
-    if (typeof window.initHudEffects === 'function') window.initHudEffects();
-    if (typeof window.initOrb === 'function') window.initOrb();
-    startUptime();
-    loadSavedState();
+    try { applyTheme(CONFIG.theme); } catch(e) { console.error('initTheme', e); }
+    try { initClock(); } catch(e) { console.error('initClock', e); }
+    try { initParticles(); } catch(e) { console.error('initParticles', e); }
+    try { initChat(); } catch(e) { console.error('initChat', e); }
+    try { initVoice(); } catch(e) { console.error('initVoice', e); }
+    try { initTasks(); } catch(e) { console.error('initTasks', e); }
+    try { initNotes(); } catch(e) { console.error('initNotes', e); }
+    try { initNotepad(); } catch(e) { console.error('initNotepad', e); }
+    try { initSettings(); } catch(e) { console.error('initSettings', e); }
+    try { initMobileNav(); } catch(e) { console.error('initMobileNav', e); }
+    try { initSystemMonitor(); } catch(e) { console.error('initSystemMonitor', e); }
+    try { initWeather(); } catch(e) { console.error('initWeather', e); }
+    try { if (typeof window.initSpeedTest === 'function') window.initSpeedTest(); } catch(e) { console.error('initSpeedTest', e); }
+    try { if (typeof window.initHudEffects === 'function') window.initHudEffects(); } catch(e) { console.error('initHudEffects', e); }
+    try { if (typeof window.initOrb === 'function') window.initOrb(); } catch(e) { console.error('initOrb', e); }
+    try { startUptime(); } catch(e) { console.error('startUptime', e); }
+    try { loadSavedState(); } catch(e) { console.error('loadSavedState', e); }
 
     // Set initial greeting time
     const firstMsg = document.querySelector('.msg-time');
@@ -136,6 +136,7 @@
     const input = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-btn');
     const clearBtn = document.getElementById('clear-chat');
+    if (!input || !sendBtn) return;
 
     const send = () => {
       const text = input.value.trim();
@@ -885,6 +886,7 @@
     const closeModal = document.getElementById('close-task-modal');
     const saveTask = document.getElementById('save-task');
     const taskInput = document.getElementById('new-task-input');
+    if (!addBtn || !taskModal || !closeModal || !saveTask || !taskInput) return;
 
     addBtn.addEventListener('click', () => taskModal.classList.remove('hidden'));
     closeModal.addEventListener('click', () => taskModal.classList.add('hidden'));
