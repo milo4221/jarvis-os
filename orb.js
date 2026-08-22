@@ -6,24 +6,24 @@
 (function() {
   'use strict';
 
-  let scene, camera, renderer, orbPoints, innerPoints, coreGlow;
-  let orbState = 'idle';
-  let time = 0;
-  let basePositions = [];
-  let innerBasePositions = [];
-  let targetScale = 1;
-  let currentScale = 1;
-  let orbContainer;
-  let rings = [];
+  var scene, camera, renderer, orbPoints, innerPoints, coreGlow;
+  var orbState = 'idle';
+  var time = 0;
+  var basePositions = [];
+  var innerBasePositions = [];
+  var targetScale = 1;
+  var currentScale = 1;
+  var orbContainer;
+  var rings = [];
 
   window.initOrb = function() {
     orbContainer = document.getElementById('orb-canvas-wrap');
     if (!orbContainer) return;
 
     requestAnimationFrame(function() {
-      const rect = orbContainer.getBoundingClientRect();
-      const w = Math.max(rect.width, 400);
-      const h = Math.max(rect.height, 400);
+      var rect = orbContainer.getBoundingClientRect();
+      var w = Math.max(rect.width, 400);
+      var h = Math.max(rect.height, 400);
 
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);

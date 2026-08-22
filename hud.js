@@ -1,6 +1,5 @@
 // =============================================
-// J.A.R.V.I.S. OS — HUD EFFECTS
-// Hex streams, FPS counter, ambient tech
+// J.A.R.V.I.S. OS — HUD EFFECTS (LIGHTWEIGHT)
 // =============================================
 
 (function() {
@@ -11,46 +10,41 @@
     initFpsCounter();
   };
 
-  // ===== Hex Data Streams =====
+  // Hex streams — update every 2s instead of 200ms
   function initHexStreams() {
-    const chars = '0123456789ABCDEF';
-    const streamL = document.getElementById('hex-stream-l');
-    const streamR = document.getElementById('hex-stream-r');
+    var chars = '0123456789ABCDEF';
+    var streamL = document.getElementById('hex-stream-l');
+    var streamR = document.getElementById('hex-stream-r');
     if (!streamL || !streamR) return;
 
-    function genHex(len) {
-      let s = '';
-      for (let i = 0; i < len; i++) {
+    function genHex() {
+      var s = '';
+      for (var i = 0; i < 200; i++) {
         s += chars[Math.floor(Math.random() * 16)];
         if ((i + 1) % 4 === 0) s += '\n';
       }
       return s;
     }
 
-    // Fill initial
-    streamL.textContent = genHex(400);
-    streamR.textContent = genHex(400);
-
-    // Cycle every 200ms for matrix-like scrolling
-    setInterval(() => {
-      streamL.textContent = genHex(400);
-      streamR.textContent = genHex(400);
-    }, 200);
+    streamL.textContent = genHex();
+    streamR.textContent = genHex();
+    setInterval(function() {
+      streamL.textContent = genHex();
+      streamR.textContent = genHex();
+    }, 2000);
   }
 
-  // ===== FPS Counter =====
+  // FPS counter — sample every 2s
   function initFpsCounter() {
-    const el = document.getElementById('hud-fps');
+    var el = document.getElementById('hud-fps');
     if (!el) return;
-
-    let frames = 0;
-    let lastTime = performance.now();
+    var frames = 0, lastTime = performance.now();
 
     function tick() {
       frames++;
-      const now = performance.now();
-      if (now - lastTime >= 1000) {
-        el.textContent = frames + ' FPS';
+      var now = performance.now();
+      if (now - lastTime >= 2000) {
+        el.textContent = Math.round(frames / ((now - lastTime) / 1000)) + ' FPS';
         frames = 0;
         lastTime = now;
       }
@@ -58,5 +52,4 @@
     }
     requestAnimationFrame(tick);
   }
-
 })();

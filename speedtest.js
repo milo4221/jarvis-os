@@ -38,35 +38,27 @@
     const wrap = graphCanvas.parentElement;
     graphCanvas.width = wrap.clientWidth - 8;
 
-    // Start animation loop
-    animateGauge();
+    // Start animation loop — throttled to 30fps
+    gaugeAnimId = setInterval(function() { drawGauge(currentSpeed); }, 33);
 
-    // Run first test immediately, then loop continuously
-    continuousSpeedLoop();
+    // Run speed test every 30 seconds (not continuously!)
+    runSpeedTest();
+    setInterval(runSpeedTest, 30000);
 
-    // Update display every 500ms with live fluctuation
-    setInterval(liveFluctuation, 500);
+    // Update display every 2 seconds with live fluctuation
+    setInterval(liveFluctuation, 2000);
 
-    // Record to history graph every 3 seconds
+    // Record to history graph every 10 seconds
     setInterval(() => {
       if (lastDownload > 0) {
         speedHistory.push(lastDownload);
         if (speedHistory.length > MAX_HISTORY) speedHistory.shift();
         drawGraph();
       }
-    }, 3000);
+    }, 10000);
   };
 
-  // ===== Continuous speed loop — fires a new test as soon as the last one finishes =====
-  async function continuousSpeedLoop() {
-    while (true) {
-      await runSpeedTest();
-      // Tiny pause so browser doesn't choke, then immediately re-test
-      await sleep(200);
-    }
-  }
-
-  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+  var gaugeAnimId;
 
   // ===== Live fluctuation — updates the display every 500ms =====
   function liveFluctuation() {
@@ -179,18 +171,13 @@
   }
 
   // ===== Animated Gauge =====
-  function animateGauge() {
-    // Smoothly interpolate current speed toward target
-    currentSpeed += (targetSpeed - currentSpeed) * 0.08;
-    drawGauge(currentSpeed);
-
-    // Update the big number
+  // Gauge draw is called by setInterval now — no rAF loop
+  // Interpolate in the interval callback
+  function drawGauge(speed) {
+    // Smooth interpolation
+    currentSpeed += (targetSpeed - currentSpeed) * 0.15;
     document.getElementById('speed-value').textContent = currentSpeed.toFixed(1);
 
-    requestAnimationFrame(animateGauge);
-  }
-
-  function drawGauge(speed) {
     const canvas = document.getElementById('speed-gauge');
     if (!canvas) return;
     const ctx = gaugeCtx;
