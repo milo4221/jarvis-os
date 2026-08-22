@@ -227,8 +227,12 @@
         addJarvisMessage(data.choices[0].message.content);
         return;
       } catch (e) {
+        // OpenAI failed — fall back to local AI
         removeTyping(typing);
-        addJarvisMessage(`I'm having trouble connecting to OpenAI, ${CONFIG.userName}. The error was: ${e.message}`);
+        setTimeout(() => {
+          const response = getLocalResponse(text);
+          addJarvisMessage(response);
+        }, 500);
         return;
       }
     }
@@ -252,8 +256,12 @@
         addJarvisMessage(data.message.content);
         return;
       } catch (e) {
+        // Ollama failed — fall back to local AI
         removeTyping(typing);
-        addJarvisMessage(`Cannot reach the Ollama server, ${CONFIG.userName}. Please verify it's running.`);
+        setTimeout(() => {
+          const response = getLocalResponse(text);
+          addJarvisMessage(response);
+        }, 500);
         return;
       }
     }
