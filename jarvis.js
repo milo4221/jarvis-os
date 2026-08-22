@@ -730,6 +730,7 @@
   function initVoice() {
     const orb = document.getElementById('voice-orb');
     const voiceStatus = document.getElementById('voice-status');
+    if (!orb) return;
 
     // Load voices
     // Load voices — auto-select JARVIS-like British male
@@ -811,26 +812,28 @@
         addMessage(text, 'user');
         processMessage(text);
         orb.classList.remove('listening');
-        voiceStatus.classList.remove('active');
+        if (voiceStatus) voiceStatus.classList.remove('active');
       };
 
       recognition.onerror = () => {
         orb.classList.remove('listening');
-        voiceStatus.classList.remove('active');
+        if (voiceStatus) voiceStatus.classList.remove('active');
       };
 
       recognition.onend = () => {
         orb.classList.remove('listening');
-        voiceStatus.classList.remove('active');
+        if (voiceStatus) voiceStatus.classList.remove('active');
       };
 
       orb.addEventListener('click', () => {
         if (orb.classList.contains('listening')) {
           recognition.stop();
         } else {
-          recognition.start();
-          orb.classList.add('listening');
-          voiceStatus.classList.add('active');
+          try {
+            recognition.start();
+            orb.classList.add('listening');
+            if (voiceStatus) voiceStatus.classList.add('active');
+          } catch(e) {}
         }
       });
 
@@ -853,37 +856,24 @@
   function speak(text) {
     if (!synthesis) return;
 
-    // Stop mic while speaking
-    window._jarvisIsSpeaking = true;
-    if (typeof window._jarvisStopListening === 'function') window._jarvisStopListening();
-
     // Set orb to speaking state
     if (typeof window.setOrbState === 'function') window.setOrbState('speaking');
 
+    // Stop any current speech
     synthesis.cancel();
 
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.rate = CONFIG.speechRate * 0.88;   // Slower, more natural pacing
-    utt.pitch = 0.92;                       // Closer to natural male pitch
-    utt.volume = 0.9;                       // Slightly softer, less robotic
+    var utt = new SpeechSynthesisUtterance(text);
+    utt.rate = CONFIG.speechRate * 0.88;
+    utt.pitch = 0.92;
+    utt.volume = 0.9;
     if (voices.length > CONFIG.voiceIndex) utt.voice = voices[CONFIG.voiceIndex];
 
-    utt.addEventListener('end', () => {
-      window._jarvisIsSpeaking = false;
+    utt.onend = function() {
       if (typeof window.setOrbState === 'function') window.setOrbState('idle');
-      // Resume mic after a short delay
-      setTimeout(() => {
-        if (typeof window._jarvisStartListening === 'function') window._jarvisStartListening();
-      }, 600);
-    });
-
-    utt.addEventListener('error', () => {
-      window._jarvisIsSpeaking = false;
+    };
+    utt.onerror = function() {
       if (typeof window.setOrbState === 'function') window.setOrbState('idle');
-      setTimeout(() => {
-        if (typeof window._jarvisStartListening === 'function') window._jarvisStartListening();
-      }, 600);
-    });
+    };
 
     synthesis.speak(utt);
   }
